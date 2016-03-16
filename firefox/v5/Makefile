@@ -11,7 +11,7 @@ profile_dir := changeHosts
 ZIP := zip
 
 # The target location of the build and build files.
-bin_dir := ../bin
+bin_dir := bin
 
 # The target XPI file.
 xpi_file := $(bin_dir)/$(extension_name).xpi
@@ -50,18 +50,35 @@ clean:
 	@rm -f $(xpi_file)
 	@echo "Cleanup is done."
 
+rwildcard=$(wildcard $1$2) $(foreach d,$(wildcard $1*),$(call rwildcard,$d/,$2))
+
 # The sources for the XPI file.
-xpi_built := install.rdf \
-             chrome.manifest \
-             $(wildcard content/*.js) \
-             $(wildcard content/*.xul) \
-             $(wildcard content/*.xml) \
-             $(wildcard content/*.css) \
-             $(wildcard skin/*.css) \
-             $(wildcard skin/*.png) \
-             $(wildcard locale/*/*.dtd) \
-             $(wildcard locale/*/*.properties) \
-			 $(wildcard content/*.jsm)
+# xpi_built := \
+# 	install.rdf \
+# 	chrome.manifest \
+# 	$(wildcard chrome/*/*.js) \
+# 	$(wildcard chrome/*/*.jsm) \
+# 	$(wildcard chrome/*/*.xul) \
+# 	$(wildcard chrome/*/*.xml) \
+# 	$(wildcard chrome/*/*.css) \
+# 	$(wildcard chrome/*/*.css) \
+# 	$(wildcard chrome/*/*.png) \
+# 	$(wildcard chrome/*/*.dtd) \
+# 	$(wildcard chrome/*/*.properties) \
+# 	$(wildcard defaults/*/*.js)
+
+xpi_built := \
+	install.rdf \
+	chrome.manifest \
+	$(call rwildcard,chrome/,*.js) \
+	$(call rwildcard,chrome/,*.jsm) \
+	$(call rwildcard,chrome/,*.xul) \
+	$(call rwildcard,chrome/,*.xml) \
+	$(call rwildcard,chrome/,*.css) \
+	$(call rwildcard,chrome/,*.png) \
+	$(call rwildcard,chrome/,*.dtd) \
+	$(call rwildcard,chrome/,*.properties) \
+	$(call rwildcard,defaults/,*.js)
 
 # This builds everything except for the actual XPI, and then it copies it to the
 # specified profile directory, allowing a quick update that requires no install.
